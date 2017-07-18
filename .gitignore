@@ -1,1 +1,4 @@
 .vscode
+build
+dist
+ascii_binder_search.egg-info

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/css/materialize.min.css">
+
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
+    <div class="container">
+        <div class="row" style="text-align: center">
+            <div class="input-field card col s12 m6 l6 offset-m3 offset-l3">
+                <i class="material-icons prefix" style="padding-top: 15px;">search</i>
+                <input type="text" id="searchBox" placeholder="Search">
+            </div>
+        </div>
+
+        <div class="result-wrapper">
+        </div>
+    </div>
+
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/elasticlunr/0.9.6/elasticlunr.min.js" type="text/javascript"></script>
+<script>
+    $(function() {
+        searchBox = $('#searchBox');
+        var url = new URL(window.location.href);
+        var searchText = url.searchParams.get('search-term');
+        searchBox.val(searchText);
+        $.get('/data.json', function(data) {
+            var keys = Object.keys(data[0]);
+            index = elasticlunr(function() {
+                for (var i = 0; i < keys.length; i++) {
+                    this.addField(keys[i]);
+                }
+                this.setRef("topic_url");
+            });
+            for (var i = 0; i < data.length; i++) {
+                index.addDoc(data[i]);
+            }
+            search()
+        });
+        $('#searchBox').change(function() {
+            search();
+        });
+
+        function search() {
+            console.log("search called");
+            var searchResults = index.search(searchBox.val());
+            var resultsMarkup = "";
+            var searchResults = searchResults.splice(0, 10);
+            for (let i = 0; i < searchResults.length; i++) {
+                var html = `<div class="row">
+                    <a href="${searchResults[i].doc.topic_url}">${searchResults[i].doc.title}</a>
+                    <span>${searchResults[i].doc.site_name + searchResults[i].doc.topic_url}</span>
+                    <p class="truncate">
+                        ${searchResults[i].doc.content}
+                    </p>
+                </div>`;
+                resultsMarkup += html
+            }
+            $('.result-wrapper').html(resultsMarkup);
+        }
+    });
+</script>
+
+<style>
+    .result-wrapper a {
+        color: #1a0dab;
+        display: block;
+        font-size: 1.3em;
+    }
+    
+    .result-wrapper span {
+        color: green
+    }
+    
+    .result-wrapper p {
+        margin: 0;
+        color: grey;
+    }
+</style>
+
+</html>

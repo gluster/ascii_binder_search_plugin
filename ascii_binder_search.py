@@ -3,13 +3,19 @@
 import os
 import sys
 import json
+from shutil import copyfile
+import argparse
 
 import yaml
 import xmltodict
 from lxml import html
 import codecs
+import pkg_resources
 
 
+dist = pkg_resources.get_distribution('ascii_binder_search')
+
+search_file_path = os.path.join(dist.location, 'static/search.html')
 
 def is_packaged():
     """ Checks if the documentation is packaged """
@@ -43,14 +49,17 @@ def find_and_parse_sitemap(distro):
 
 def parse_html_doc(path):
     """ Parses the title and the main article and returns it as dict """
-    doc_file = codecs.open(path, 'r')
-    doc = html.fromstring(doc_file.read().replace('\n', ""))
-    title = doc.xpath("//title")[0].text_content()
-    ptags = doc.xpath("//div[contains(@class, 'paragraph')]")
-    content = ''
-    for p in ptags:
-        content += p.text_content() + '\n'
-    return {"title": title, "content": content}
+    try:
+        doc_file = codecs.open(path, 'r')
+        doc = html.fromstring(doc_file.read().replace('\n', ""))
+        title = doc.xpath("//title")[0].text_content()
+        ptags = doc.xpath("//div[contains(@class, 'paragraph')]")
+        content = ''
+        for p in ptags:
+            content += p.text_content() + '\n'
+        return {"title": title, "content": content}
+    except IndexError:
+        return None
 
 
 def generate_dump():
@@ -58,26 +67,31 @@ def generate_dump():
     with open('_distro_map.yml') as distro_map_yml:
         distro_map = yaml.load(distro_map_yml)
         for distro in distro_map:
+            site_folder = distro_map[distro]['site']
             data = []
-            if not distro_exists(distro):
+            if not distro_exists(site_folder):
                 continue
-            sitemap = find_and_parse_sitemap(distro)
+            sitemap = find_and_parse_sitemap(site_folder)
             urls = sitemap['urlset']['url']
             site_name = urls[0]['loc']
             for url in urls[2:]:
-                topic_url = '_package' + '/' + distro + url['loc'].replace(site_name, "")
+                topic_url = '_package' + '/' + site_folder + '/' + url['loc'].replace(site_name, "")
                 doc_content = parse_html_doc(topic_url)
-                data.append({
-                    "topic_url": topic_url,
-                    "title": doc_content['title'],
-                    "content": doc_content['content'],
-                })
-            data_json = open('{}/data.json'.format('_package/'+distro+'/'), 'w+')
+                if doc_content:
+                    data.append({
+                        "topic_url": url['loc'].replace(site_name, ""),
+                        "title": doc_content['title'],
+                        "content": doc_content['content'],
+                        "site_name": site_name
+                    })
+            data_json = open('{}/data.json'.format('_package/'+site_folder+'/'), 'w+')
             json.dump(data, data_json)
+            copyfile(search_file_path, '_package/{}/search.html'.format(site_folder))
             data_json.close()
 
 
 def main():
+    global search_file_path
     if not repo_check():
         sys.exit(1)
     if not is_packaged():
@@ -86,6 +100,14 @@ def main():
             os.system('asciibinder package')
         else:
             sys.exit()
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-s', '--search-template')
+    args = parser.parse_args()
+
+    if args.search_template:
+        search_file_path = os.getcwd() + '/' + args.search_template
+
     generate_dump()
 
 
