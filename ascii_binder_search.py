@@ -8,7 +8,7 @@ import argparse
 
 import yaml
 import xmltodict
-from lxml import html
+from bs4 import BeautifulSoup
 import codecs
 import pkg_resources
 
@@ -51,12 +51,12 @@ def parse_html_doc(path):
     """ Parses the title and the main article and returns it as dict """
     try:
         doc_file = codecs.open(path, 'r')
-        doc = html.fromstring(doc_file.read().replace('\n', ""))
-        title = doc.xpath("//title")[0].text_content()
-        ptags = doc.xpath("//div[contains(@class, 'paragraph')]")
+        soup = BeautifulSoup(doc_file.read(), "lxml")
+        title = soup.find('title').get_text()
+        ptags = soup.findAll('div', class_="paragraph")
         content = ''
         for p in ptags:
-            content += p.text_content() + '\n'
+            content += p.get_text()
         return {"title": title, "content": content}
     except IndexError:
         return None
