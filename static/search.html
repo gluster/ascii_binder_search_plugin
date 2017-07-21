@@ -58,13 +58,32 @@
             var searchResults = index.search(searchBox.val());
             var resultsMarkup = "";
             var searchResults = searchResults.splice(0, 10);
+            var wordsToHighlight = [];
+            var searchWords = searchBox.val().split(' ');
+            for (var i = 0; i < searchWords.length; i++) {
+                if (!elasticlunr.stopWordFilter.stopWords[searchWords[i]]) {
+                    wordsToHighlight.push(searchWords[i]);
+                }
+            }
             for (let i = 0; i < searchResults.length; i++) {
+                var line = '';
+                for (var j = 0; j < wordsToHighlight.length; j++) {
+                    if (line.length < 300) {
+                        var keywordPos = searchResults[i].doc.content.indexOf(wordsToHighlight[j]);
+                        if (keywordPos > -1) {
+                            line += ' ' + searchResults[i].doc.content.slice(keywordPos, keywordPos + 140) + '...';
+                        }
+                    }
+                    var re = new RegExp(wordsToHighlight[j], 'g');
+                    line = line.replace(re, `<b>${wordsToHighlight[j]}</b>`);
+                }
                 var html = `<div class="row">
                     <a href="${searchResults[i].doc.topic_url}">${searchResults[i].doc.title}</a>
                     <span>${searchResults[i].doc.site_name + searchResults[i].doc.topic_url}</span>
-                    <p class="truncate">
-                        ${searchResults[i].doc.content}
+                    <p>
+                        ${line}
                     </p>
+                    <p>Keywords: ${wordsToHighlight.toString()}</p>
                 </div>`;
                 resultsMarkup += html
             }
