@@ -10,7 +10,7 @@ setup(
     license="BSD",
     keywords="Asciibinder, ascii_binder_search",
     url="https://github.com/smitthakkar96/ascii_binder_search_plugin",
-    install_requires=['lxml', 'pyyaml'],
+    install_requires=['lxml', 'pyyaml', 'xmltodict'],
     py_modules=['ascii_binder_search'],
     include_package_data=True,
     zip_safe=False,
