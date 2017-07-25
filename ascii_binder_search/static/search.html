@@ -103,7 +103,6 @@
     .result-wrapper span {
         color: green;
         display: block;
-        width: 150px;
         word-wrap: break-word;
     }
     
@@ -111,6 +110,13 @@
         margin: 0;
         color: grey;
     }
+    
+    @media (min-width:480px)  { 
+        .result-wrapper span {
+            width: 150px
+        }
+    }
+
 </style>
 
 </html>
