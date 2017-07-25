@@ -12,7 +12,6 @@ from bs4 import BeautifulSoup
 import codecs
 import pkg_resources
 
-
 dist = pkg_resources.get_distribution('ascii_binder_search')
 
 search_file_path = os.path.join(dist.location, 'static/search.html')
