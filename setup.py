@@ -14,6 +14,7 @@ setup(
     url="https://github.com/smitthakkar96/ascii_binder_search_plugin",
     install_requires=['lxml', 'pyyaml', 'xmltodict', 'beautifulsoup4', 'xmltodict'],
     py_modules=['ascii_binder_search'],
+    data_files=['static/search.html'],
     include_package_data=True,
     zip_safe=False,
     scripts=[
