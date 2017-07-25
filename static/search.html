@@ -65,7 +65,7 @@
                     wordsToHighlight.push(searchWords[i]);
                 }
             }
-            for (let i = 0; i < searchResults.length; i++) {
+            for (var i = 0; i < searchResults.length; i++) {
                 for (var j = 0; j < wordsToHighlight.length; j++) {
                     var line = '';
                     var keywordPos = searchResults[i].doc.content.indexOf(wordsToHighlight[j]);
