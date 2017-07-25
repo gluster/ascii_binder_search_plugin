@@ -72,7 +72,7 @@
                     if (keywordPos > -1) {
                         line += ' ' + searchResults[i].doc.content.slice(keywordPos, keywordPos + 240);
                     }
-                    var re = new RegExp(wordsToHighlight[j], 'g');
+                    var re = new RegExp(wordsToHighlight[j], 'gi');
                     line = line.replace(re, `<b>${wordsToHighlight[j]}</b>`);
                     if (line == '') {
                         continue
