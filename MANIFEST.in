@@ -1,1 +1,1 @@
-include static/*.html
+recursive-include ascii_binder_search/static *.html

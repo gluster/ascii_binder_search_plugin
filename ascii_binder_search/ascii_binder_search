@@ -1,0 +1,5 @@
+#!/usr/bin/env python
+
+from ascii_binder_search import ascii_binder_search
+
+ascii_binder_search.main()
