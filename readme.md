@@ -6,7 +6,7 @@ This is a small plugin that generates a data.json which contains the content and
 ## Install instructions
 - Make sure you have a working installation of python3
 - Create a virtualenv by ``` python3 -m venv <name of virtualenv> ```
-- activate virtualenv by ``` source <>/bin/activate ```
+- activate virtualenv by ``` source <name of virtualenv>/bin/activate ```
 - Then Run ``` pip install git+github.com/smitthakkar96/ascii_binder_search_plugin ``` to install it
 
 ## Usage
