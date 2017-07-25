@@ -14,7 +14,7 @@ import pkg_resources
 
 dist = pkg_resources.get_distribution('ascii_binder_search')
 
-search_file_path = os.path.join(dist.location, 'static/search.html')
+search_file_path = os.path.join(dist.location, 'ascii_binder_search/static/search.html')
 
 def is_packaged():
     """ Checks if the documentation is packaged """
