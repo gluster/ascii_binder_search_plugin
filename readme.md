@@ -7,7 +7,7 @@ This is a small plugin that generates a data.json which contains the content and
 - Make sure you have a working installation of python3
 - Create a virtualenv by ``` python3 -m venv <name of virtualenv> ```
 - activate virtualenv by ``` source <name of virtualenv>/bin/activate ```
-- Then Run ``` pip install git+github.com/smitthakkar96/ascii_binder_search_plugin ``` to install it
+- Then Run ``` pip install git+https://github.com/smitthakkar96/ascii_binder_search_plugin ``` to install it
 
 ## Usage
 - To generate documentation you must run ``` ascii_binder_search ``` and it will do it's magic. I know many of you floks might wanna have your own search page design and to achieve that download [search.html](https://raw.githubusercontent.com/smitthakkar96/ascii_binder_search_plugin/master/static/search.html) and modfiy it accordingly. Now it's time to add it to the docs to do so run ``` ascii_binder_search -s <filename> ```
