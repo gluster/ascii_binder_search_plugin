@@ -36,7 +36,7 @@
         var url = new URL(window.location.href);
         var searchText = url.searchParams.get('search-term');
         searchBox.val(searchText);
-        $.get('/data.json', function(data) {
+        $.get('data.json', function(data) {
             var keys = Object.keys(data[0]);
             index = elasticlunr(function() {
                 for (var i = 0; i < keys.length; i++) {
@@ -66,26 +66,27 @@
                 }
             }
             for (let i = 0; i < searchResults.length; i++) {
-                var line = '';
                 for (var j = 0; j < wordsToHighlight.length; j++) {
-                    if (line.length < 300) {
-                        var keywordPos = searchResults[i].doc.content.indexOf(wordsToHighlight[j]);
-                        if (keywordPos > -1) {
-                            line += ' ' + searchResults[i].doc.content.slice(keywordPos, keywordPos + 140) + '...';
-                        }
+                    var line = '';
+                    var keywordPos = searchResults[i].doc.content.indexOf(wordsToHighlight[j]);
+                    if (keywordPos > -1) {
+                        line += ' ' + searchResults[i].doc.content.slice(keywordPos, keywordPos + 240);
                     }
                     var re = new RegExp(wordsToHighlight[j], 'g');
                     line = line.replace(re, `<b>${wordsToHighlight[j]}</b>`);
+                    if (line == '') {
+                        continue
+                    }
+                    var html = `<div class="row">
+                        <a href="${searchResults[i].doc.topic_url.replace('/', '')}">${searchResults[i].doc.title}</a>
+                        <span>${searchResults[i].doc.site_name + searchResults[i].doc.topic_url}</span>
+                        <p>
+                            ${line}
+                        </p>
+                        <p>Keywords: ${wordsToHighlight[j]}</p>
+                    </div>`;
+                    resultsMarkup += html
                 }
-                var html = `<div class="row">
-                    <a href="${searchResults[i].doc.topic_url}">${searchResults[i].doc.title}</a>
-                    <span>${searchResults[i].doc.site_name + searchResults[i].doc.topic_url}</span>
-                    <p>
-                        ${line}
-                    </p>
-                    <p>Keywords: ${wordsToHighlight.toString()}</p>
-                </div>`;
-                resultsMarkup += html
             }
             $('.result-wrapper').html(resultsMarkup);
         }
@@ -100,7 +101,10 @@
     }
     
     .result-wrapper span {
-        color: green
+        color: green;
+        display: block;
+        width: 150px;
+        word-wrap: break-word;
     }
     
     .result-wrapper p {

@@ -1,6 +1,7 @@
 import os
 from setuptools import setup
 
+
 setup(
     name="ascii_binder_search",
     version="0.0.1",
