@@ -1,0 +1,22 @@
+language: python, ruby
+python:
+  - "2.7"
+install:
+  - gem install ascii_binder
+  - pip install -r requirements.txt
+  - python setup.py install
+
+script:
+  - flake8 --max-line-length=100
+
+after_success:
+  - bash scripts/build_docs.sh
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  repo: https://github.com/smitthakkar96/fedora_docs_proposal
+  local_dir: _package/main
+  on:
+    branch: master
