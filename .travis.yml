@@ -17,6 +17,6 @@ deploy:
   skip_cleanup: true
   github_token: $GITHUB_TOKEN
   repo: https://github.com/smitthakkar96/fedora_docs_proposal
-  local_dir: _package/main
+  local_dir: fedora_docs_proposal/_package/main
   on:
     branch: master
