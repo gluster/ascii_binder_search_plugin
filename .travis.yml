@@ -4,6 +4,7 @@ python:
 install:
   - gem install ascii_binder
   - pip install -r requirements.txt
+  - python setup.py install
 
 script:
   - flake8 --max-line-length=100
