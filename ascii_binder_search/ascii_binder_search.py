@@ -81,7 +81,8 @@ def generate_dump():
                         "topic_url": url['loc'].replace(site_name, ""),
                         "title": doc_content['title'],
                         "content": doc_content['content'],
-                        "site_name": site_name
+                        "site_name": site_name,
+                        "version": distro
                     })
             data_json = open('{}/data.json'.format('_package/'+site_folder+'/'), 'w+')
             json.dump(data, data_json)
