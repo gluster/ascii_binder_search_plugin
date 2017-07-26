@@ -16,14 +16,20 @@
     <!--Import jQuery before materialize.js-->
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="http://pagination.js.org/dist/2.0.7/pagination.min.js"></script>
 
     <div class="container">
         <div class="row" style="text-align: center">
-            <div class="input-field card col s12 m6 l6 offset-m3 offset-l3">
+            <div class="input-field col s12 m6 l6 offset-m2 offset-l2">
                 <i class="material-icons prefix" style="padding-top: 15px;">search</i>
                 <input type="text" id="searchBox" placeholder="Search">
             </div>
+            <div class="col s12 m3 l3">
+                <select class="browser-default" style="margin-top: 18px">
+                </select>
+            </div>
+
         </div>
 
         <div class="result-wrapper">
@@ -41,10 +47,41 @@
         searchBox = $('#searchBox');
         var url = new URL(window.location.href);
         var searchText = url.searchParams.get('search-term');
+        var version = url.searchParams.get('version');
+        console.log(version);
         searchBox.val(searchText);
-        $.get('data.json', function(data) {
+        var indexes = {};
+        axios.get('versions.json')
+            .then(function(response) {
+                var versions = response.data['versions'];
+                console.log(versions);
+                var requests = [];
+                var selectOptions = [];
+                for (var i = 0; i < versions.length; i++) {
+                    console.log('data_' + versions[i]);
+                    requests.push(axios.get('data_' + versions[i] + '.json'))
+                    selectOptions.push(`<option value="${versions[i]}">${versions[i]}</option>`);
+                }
+                $('select').html(selectOptions);
+                if (version) {
+                    $('select').val(version);
+                }
+
+                axios.all(requests)
+                    .then(function(responses) {
+                        for (var i = 0; i < responses.length; i++) {
+                            indexes[versions[i]] = buildIndex(responses[i].data);
+                        }
+                    });
+            })
+            .catch(function(error) {
+                console.log(error);
+                alert("Something went wrong!");
+            });
+
+        function buildIndex(data) {
             var keys = Object.keys(data[0]);
-            index = elasticlunr(function() {
+            var index = elasticlunr(function() {
                 for (var i = 0; i < keys.length; i++) {
                     this.addField(keys[i]);
                 }
@@ -53,15 +90,24 @@
             for (var i = 0; i < data.length; i++) {
                 index.addDoc(data[i]);
             }
-            search()
-        });
+            return index
+        }
+
         $('#searchBox').change(function() {
             search();
         });
 
+        $('select').change(function() {
+            search();
+        });
+
+
         function search() {
             console.log("search called");
-            var searchResults = index.search(searchBox.val());
+            var index = indexes[$('select').val()];
+            var searchResults = index.search(searchBox.val(), {
+                extend: true
+            });
             var resultsMarkup = "";
             var searchResults = searchResults.splice(0, 10);
             var wordsToHighlight = [];

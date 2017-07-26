@@ -5,6 +5,7 @@ import sys
 import json
 from shutil import copyfile
 import argparse
+from collections import defaultdict
 
 import yaml
 import xmltodict
@@ -67,27 +68,34 @@ def generate_dump():
         distro_map = yaml.load(distro_map_yml)
         for distro in distro_map:
             site_folder = distro_map[distro]['site']
-            data = []
+            data = defaultdict(list)
             if not distro_exists(site_folder):
                 continue
             sitemap = find_and_parse_sitemap(site_folder)
             urls = sitemap['urlset']['url']
             site_name = urls[0]['loc']
             for url in urls[2:]:
-                topic_url = '_package' + '/' + site_folder + '/' + url['loc'].replace(site_name, "")
-                doc_content = parse_html_doc(topic_url)
+                # HACK: Things act weird if the site url doesn't end with /, can't help my self from using a hack
+                if site_name[-1] != '/':
+                    site_name += '/'
+                topic_path = url['loc'].replace(site_name, "")
+                doc_content = parse_html_doc('_package' + '/' + site_folder + '/' + topic_path)
+                version = topic_path[:topic_path.index('/')]
                 if doc_content:
-                    data.append({
-                        "topic_url": url['loc'].replace(site_name, ""),
+                    data[version].append({
+                        "topic_url": topic_path,
                         "title": doc_content['title'],
                         "content": doc_content['content'],
-                        "site_name": site_name,
-                        "version": distro
+                        "site_name": site_name
                     })
-            data_json = open('{}/data.json'.format('_package/'+site_folder+'/'), 'w+')
-            json.dump(data, data_json)
-            copyfile(search_file_path, '_package/{}/search.html'.format(site_folder))
-            data_json.close()
+            for version in data:
+                dump_file = open('{}/data_{}.json'.format('_package/'+site_folder+'/', version), 'w+')
+                json.dump(data[version], dump_file)
+                copyfile(search_file_path, '_package/{}/search.html'.format(site_folder))
+                dump_file.close()
+            versions_file = open('{}/versions.json'.format('_package/'+site_folder+'/'), 'w+')
+            json.dump({"versions": list(data.keys())}, versions_file)
+            versions_file.close()
 
 
 def main():
