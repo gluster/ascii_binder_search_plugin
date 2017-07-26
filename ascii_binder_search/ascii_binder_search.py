@@ -106,7 +106,7 @@ def main():
     args = parser.parse_args()
 
     if args.search_template:
-        search_file_path = os.getcwd() + '/' + args.search_template
+        search_file_path = args.search_template
 
     generate_dump()
 
