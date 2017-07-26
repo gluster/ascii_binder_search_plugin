@@ -14,7 +14,7 @@
 
 <body>
     <!--Import jQuery before materialize.js-->
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="http://pagination.js.org/dist/2.0.7/pagination.min.js"></script>
@@ -23,7 +23,7 @@
         <div class="row" style="text-align: center">
             <div class="input-field col s12 m6 l6 offset-m2 offset-l2">
                 <i class="material-icons prefix" style="padding-top: 15px;">search</i>
-                <input type="text" id="searchBox" placeholder="Search">
+                <input id="searchBox" placeholder="Search">
             </div>
             <div class="col s12 m3 l3">
                 <select class="browser-default" style="margin-top: 18px">
@@ -41,7 +41,7 @@
     </div>
 
 </body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/elasticlunr/0.9.6/elasticlunr.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/elasticlunr/0.9.6/elasticlunr.min.js"></script>
 <script>
     $(function() {
         searchBox = $('#searchBox');

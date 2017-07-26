@@ -13,9 +13,11 @@ from bs4 import BeautifulSoup
 import codecs
 import pkg_resources
 
+
 dist = pkg_resources.get_distribution('ascii_binder_search')
 
 search_file_path = os.path.join(dist.location, 'ascii_binder_search/static/search.html')
+
 
 def is_packaged():
     """ Checks if the documentation is packaged """
@@ -27,7 +29,9 @@ def repo_check():
     ls = os.listdir()
 
     if '_distro_map.yml' not in ls or '_distro_map.yml' not in ls:
-        print("The specified docs base directory {} does not appear to be a valid ascii_binder directory.".format(os.getcwd())) #  noqa
+        print("The specified docs base directory {} does"
+              "not appear to be a valid ascii_binder directory."
+              .format(os.getcwd()))
         return False
 
     return True
@@ -75,7 +79,9 @@ def generate_dump():
             urls = sitemap['urlset']['url']
             site_name = urls[0]['loc']
             for url in urls[2:]:
-                # HACK: Things act weird if the site url doesn't end with /, can't help my self from using a hack
+                # HACK
+                # Things act differently if the site url does not end with /
+                # so appending / it if not present
                 if site_name[-1] != '/':
                     site_name += '/'
                 topic_path = url['loc'].replace(site_name, "")
@@ -89,7 +95,8 @@ def generate_dump():
                         "site_name": site_name
                     })
             for version in data:
-                dump_file = open('{}/data_{}.json'.format('_package/'+site_folder+'/', version), 'w+')
+                dump_file = open('{}/data_{}.json'.format('_package/'+site_folder+'/',
+                                                          version), 'w+')
                 json.dump(data[version], dump_file)
                 copyfile(search_file_path, '_package/{}/search.html'.format(site_folder))
                 dump_file.close()
@@ -103,7 +110,8 @@ def main():
     if not repo_check():
         sys.exit(1)
     if not is_packaged():
-        answer = input("Site must be packaged before generating docs. Would you like to package it? [Y/N] ")
+        answer = input("Site must be packaged before generating docs."
+                       "Would you like to package it? [Y/N] ")
         if answer in ['Y', 'y', 'yes']:
             os.system('asciibinder package')
         else:
