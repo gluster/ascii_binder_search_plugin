@@ -2,7 +2,7 @@ language: python, ruby
 python:
   - "2.7"
 install:
-  - gem install ascii-binder
+  - gem install ascii_binder
   - pip install -r requirements.txt
 
 script:
