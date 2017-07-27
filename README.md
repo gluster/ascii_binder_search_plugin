@@ -1,4 +1,4 @@
-# AsciiBinder Search Plugin
+# AsciiBinder Search Plugin  [![Build Status](https://travis-ci.org/smitthakkar96/ascii_binder_search_plugin.svg?branch=master)](https://travis-ci.org/smitthakkar96/ascii_binder_search_plugin)
 
 ## What is this?
 This is a small plugin that generates a data.json which contains the content and title of each page and puts it in each distro. This file is indexed and searched with search template client side. This plugin provides a default search template that is ready to use, but if you want you can use your own search template. See the instructions below.
