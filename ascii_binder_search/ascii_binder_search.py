@@ -21,12 +21,12 @@ search_file_path = os.path.join(dist.location, 'ascii_binder_search/static/searc
 
 def is_packaged():
     """ Checks if the documentation is packaged """
-    return "_package" in os.listdir()
+    return "_package" in os.listdir('.')
 
 
 def repo_check():
     """ Checks if it's a valid ascii_binder compitable repo """
-    ls = os.listdir()
+    ls = os.listdir('.')
 
     if '_distro_map.yml' not in ls or '_distro_map.yml' not in ls:
         print("The specified docs base directory {} does"

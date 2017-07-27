@@ -1,7 +1,12 @@
-language: python, ruby
-python:
-  - "2.7"
+language: ruby
+sudo: true
+rvm:
+  - 2.3.3
+
+cache: bundler
+
 install:
+  - sudo apt-get install gcc ruby ruby-dev libxml2 libxml2-dev  libxslt1-dev
   - gem install ascii_binder
   - pip install -r requirements.txt
   - python setup.py install
@@ -16,7 +21,7 @@ deploy:
   provider: pages
   skip_cleanup: true
   github_token: $GITHUB_TOKEN
-  repo: https://github.com/smitthakkar96/fedora_docs_proposal
+  repo: smitthakkar96/fedora_docs_proposal
   local_dir: fedora_docs_proposal/_package/main
   on:
     branch: master
