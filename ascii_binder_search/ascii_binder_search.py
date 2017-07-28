@@ -18,6 +18,8 @@ dist = pkg_resources.get_distribution('ascii_binder_search')
 
 search_file_path = os.path.join(dist.location, 'ascii_binder_search/static/search.html')
 
+verbose = False
+
 
 def is_packaged():
     """ Checks if the documentation is packaged """
@@ -27,7 +29,6 @@ def is_packaged():
 def repo_check():
     """ Checks if it's a valid ascii_binder compitable repo """
     ls = os.listdir('.')
-
     if '_distro_map.yml' not in ls or '_distro_map.yml' not in ls:
         print("The specified docs base directory {} does"
               "not appear to be a valid ascii_binder directory."
@@ -98,15 +99,23 @@ def generate_dump():
                 dump_file = open('{}/data_{}.json'.format('_package/'+site_folder+'/',
                                                           version), 'w+')
                 json.dump(data[version], dump_file)
-                copyfile(search_file_path, '_package/{}/search.html'.format(site_folder))
                 dump_file.close()
+                if verbose:
+                    print("File Created in: " + os.path.realpath(dump_file.name))
+
+            copyfile(search_file_path, '_package/{}/search.html'.format(site_folder))
             versions_file = open('{}/versions.json'.format('_package/'+site_folder+'/'), 'w+')
             json.dump({"versions": list(data.keys())}, versions_file)
             versions_file.close()
 
+            if verbose:
+                print("File Created in: " + os.path.realpath(versions_file.name))
+                print("File Created in: " + os.getcwd() + '_package/{}/search.html'
+                      .format(site_folder))
+
 
 def main():
-    global search_file_path
+    global search_file_path, verbose
     if not repo_check():
         sys.exit(1)
     if not is_packaged():
@@ -119,10 +128,14 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--search-template')
+    parser.add_argument('-v', '--verbose', action='store_true')
     args = parser.parse_args()
 
     if args.search_template:
         search_file_path = args.search_template
+
+    if args.verbose:
+        verbose = True
 
     generate_dump()
 
