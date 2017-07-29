@@ -90,7 +90,7 @@ def generate_dump():
                 if site_name[-1] != '/':
                     site_name += '/'
                 topic_path = url['loc'].replace(site_name, "")
-                doc_content = parse_html_doc('_package'+ '/' + site_folder + '/' + topic_path)
+                doc_content = parse_html_doc('_package' + '/' + site_folder + '/' + topic_path)
                 print(topic_path)
                 version = topic_path[:topic_path.index('/')]
                 if doc_content:
