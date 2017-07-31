@@ -23,11 +23,15 @@ This is a small plugin that generates a data.json which contains the content and
 
         ascii_binder_search
 
-1. Download, and optionally customize, [search.html](https://raw.githubusercontent.com/smitthakkar96/ascii_binder_search_plugin/master/static/search.html)
+1. Download, and optionally customize [search.html](https://raw.githubusercontent.com/smitthakkar96/ascii_binder_search_plugin/master/static/search.html) or other assets present in
+[static directory](https://github.com/smitthakkar96/ascii_binder_search_plugin/static)
 
 1. Add the search to the documentation site
 
-        ascii_binder_search -s <filename>
+        ascii_binder_search -s <path_to_static_directory>
+
+Everything that would be present in static folder will be copied to thier respective paths
+Please consider using ``` _javascripts/<js_file> ``` for javascripts and ``` _stylesheets/<js_file> ``` for stylesheets in your **search.html**
 
 ## screenshot
 ![](screenshot.png)

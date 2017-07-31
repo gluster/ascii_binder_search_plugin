@@ -16,7 +16,7 @@ import pkg_resources
 
 dist = pkg_resources.get_distribution('ascii_binder_search')
 
-search_file_path = os.path.join(dist.location, 'ascii_binder_search/static/search.html')
+static_dir = os.path.join(dist.location, 'ascii_binder_search/static')
 
 verbose = False
 
@@ -67,6 +67,26 @@ def parse_html_doc(path):
         return None
 
 
+def copy_static_assets(path):
+    """ Copies the static assets to their respective directory.
+    Please make sure that
+    """
+    # create _javascripts folder under the site folder if not exists
+    if not os.path.exists(path + '_javascripts'):
+        os.mkdir(path + '_javascripts', 777)
+    contents = os.listdir(static_dir)
+    for asset_path in contents:
+        dest = path
+        if '.css' in asset_path:
+            dest += '_stylesheets'
+        elif '.js' in asset_path:
+            dest += '_javascripts'
+
+        copyfile(os.path.join(static_dir, asset_path), os.path.join(dest, asset_path))
+        if verbose:
+            print("Copied {} to {}".format(asset_path, dest))
+
+
 def generate_dump():
     """ Generates json file for each and every distros """
     with open('_distro_map.yml') as distro_map_yml:
@@ -91,7 +111,6 @@ def generate_dump():
                     site_name += '/'
                 topic_path = url['loc'].replace(site_name, "")
                 doc_content = parse_html_doc('_package' + '/' + site_folder + '/' + topic_path)
-                print(topic_path)
                 version = topic_path[:topic_path.index('/')]
                 if doc_content:
                     data[version].append({
@@ -101,26 +120,24 @@ def generate_dump():
                         "site_name": site_name
                     })
             for version in data:
-                dump_file = open('{}/data_{}.json'.format('_package/'+site_folder+'/',
+                dump_file = open('{}/data_{}.json'.format('_package/' + site_folder + '/',
                                                           version), 'w+')
                 json.dump(data[version], dump_file)
                 dump_file.close()
                 if verbose:
                     print("File Created in: " + os.path.realpath(dump_file.name))
 
-            copyfile(search_file_path, '_package/{}/search.html'.format(site_folder))
-            versions_file = open('{}/versions.json'.format('_package/'+site_folder+'/'), 'w+')
+            copy_static_assets('_package/{}/'.format(site_folder))
+            versions_file = open('{}/versions.json'.format('_package/' + site_folder + '/'), 'w+')
             json.dump({"versions": list(data.keys())}, versions_file)
             versions_file.close()
 
             if verbose:
                 print("File Created in: " + os.path.realpath(versions_file.name))
-                print("File Created in: " + os.getcwd() + '_package/{}/search.html'
-                      .format(site_folder))
 
 
 def main():
-    global search_file_path, verbose
+    global verbose, static_dir
     if not repo_check():
         sys.exit(1)
     if not is_packaged():
@@ -132,12 +149,12 @@ def main():
             sys.exit()
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-s', '--search-template')
+    parser.add_argument('-s', '--static-dir')
     parser.add_argument('-v', '--verbose', action='store_true')
     args = parser.parse_args()
 
-    if args.search_template:
-        search_file_path = args.search_template
+    if args.static_dir:
+        static_dir = args.static_dir
 
     if args.verbose:
         verbose = True

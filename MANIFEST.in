@@ -1,1 +1,3 @@
 recursive-include ascii_binder_search/static *.html
+recursive-include ascii_binder_search/static *.js
+recursive-include ascii_binder_search/static *.css
