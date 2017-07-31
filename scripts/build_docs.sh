@@ -8,3 +8,8 @@ asciibinder package
 
 # run search plugin on it
 ascii_binder_search
+
+# add no jekyll to the root dir of package folder
+cd _package/main
+touch .nojekyll
+echo "Turn off jekyll" >> .nojekyll
