@@ -26,10 +26,11 @@ verbose = False
 class Indexer(object):
     """ Abstract class for indexer """
 
-    def __init__(self, verbose, static_dir):
+    def __init__(self, verbose, static_dir, no_static):
         self.verbose = verbose
         self.static_dir = static_dir
         self.backend_static_dir = None
+        self.no_static = no_static
 
     def parse_html(self, doc_path):
         """ Parses the title and the main article content from the documentation file
@@ -81,12 +82,13 @@ class Indexer(object):
                             "content": doc_content['content'],
                             "site_name": site_name
                         })
-                copy_static_assets('_package/{}/'.format(site_folder),
-                                   self.static_dir, self.verbose)
-                if self.backend_static_dir:
+                if not self.no_static:
                     copy_static_assets('_package/{}/'.format(site_folder),
-                                       os.path.join(self.static_dir, self.backend_static_dir),
-                                       self.verbose)
+                                       self.static_dir, self.verbose)
+                    if self.backend_static_dir:
+                        copy_static_assets('_package/{}/'.format(site_folder),
+                                           os.path.join(self.static_dir, self.backend_static_dir),
+                                           self.verbose)
                 self.index(data, distro, site_folder)
 
     def index(self, dump, distro, site_folder):
@@ -149,6 +151,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--static-dir', default=static_dir)
     parser.add_argument('-v', '--verbose', action='store_true')
+    parser.add_argument('-n', '--no-static', action='store_true')
     parser.add_argument('-i', '--indexer', required=True)
 
     args, options = parser.parse_known_args()
@@ -163,7 +166,7 @@ def main():
     if args.indexer not in known_indexers:
         print("Unknown indexer {}".format(args.indexer))
         sys.exit(1)
-    indexer = known_indexers[args.indexer](verbose, static_dir)
+    indexer = known_indexers[args.indexer](verbose, static_dir, args.no_static)
     if os.path.isdir(os.path.join(static_dir, args.indexer)):
         indexer.backend_static_dir = args.indexer
     indexer.run()
