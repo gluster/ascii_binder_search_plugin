@@ -4,4 +4,4 @@ dist
 ascii_binder_search.egg-info
 __pycache__
 ascii_binder_search.py
-.gitignore
+.Ds_store
