@@ -1,4 +1,4 @@
-# AsciiBinder Search Plugin  [![Build Status](https://travis-ci.org/smitthakkar96/ascii_binder_search_plugin.svg?branch=master)](https://travis-ci.org/smitthakkar96/ascii_binder_search_plugin)
+# AsciiBinder Search Plugin  [![Build Status](https://travis-ci.org/gluster/ascii_binder_search_plugin.svg?branch=master)](https://travis-ci.org/smitthakkar96/ascii_binder_search_plugin)
 
 ## What is this?
 This is a small plugin developed to help the opensource projects using asciibinder to implement search functionality in their site. With this plugin it is very convenient to implement search functionality in your documentation site. This plugin ships you a indexer that works on client side but it is easy to extend it's capability by plugging in other supported indexer or build your own indexer that works with the search engine that you want. 
