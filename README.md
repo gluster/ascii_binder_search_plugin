@@ -43,4 +43,5 @@ Please consider using ``` _javascripts/<js_file> ``` for javascripts and ``` _st
 ![](plugin_working.png)
 
 ## How do I make my own pluggable indexer?
+Here is the guide that explains what needs to be done [link](https://github.com/gluster/ascii_binder_search_plugin/blob/master/building_extension.md) and 
 [Check out the boilerplate](https://github.com/smitthakkar96/pluggable_indexer_boilerplate)
